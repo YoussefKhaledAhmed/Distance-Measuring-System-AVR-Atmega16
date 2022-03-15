@@ -1,0 +1,94 @@
+/*-----------------------------------------------------------*
+ * [FILE NAME]: ultrasonic.c
+ *
+ * [AUTHOR]: YOUSEF KHALED
+ *
+ * [DATE CREATED]: 17/10/2021
+ *
+ * [DESCRIPTION]: Source file for ULTRASONIC driver
+ *-----------------------------------------------------------*/
+
+#include "ultrasonic.h"
+#include "common_macros.h"
+#include "icu.h"
+#include "gpio.h"
+#include <util/delay.h>
+#include <avr/io.h>
+
+uint8 g_timerValue = 0;
+uint8 counter = 0;
+
+/*
+ * input: non
+ * return: non
+ * Description:
+ * it is a function that initializes the ULTRASONIC sensor.
+ */
+void ULTRASONIC_init (void)
+{
+	/* initializing the ICU */
+	ICU_init();
+	/* setting the "ULTRASONIC_edgeProcessing" as the function to be called when the interrupt occurs */
+	ICU_setCallBack(ULTRASONIC_edgeProcessing);
+	/* setting the PB5 as output pin as it is the pin that will send the trigger signal to the ULTRASONIC*/
+	GPIO_setupPinDirection(PORTB_ID, PIN5_ID, PIN_OUTPUT);
+}
+
+/*
+ * input: non
+ * return: non
+ * Description:
+ * it is the function that is responsible for sending a trigger signal to the ULTRASONIC sensor
+ * this signal description is a high pulse remain for 10 us.
+ */
+void ULTRASONIC_trigger(void)
+{
+	GPIO_writePin(PORTB_ID, PIN5_ID, LOGIC_HIGH);
+	_delay_us(10);
+	GPIO_writePin(PORTB_ID, PIN5_ID, LOGIC_LOW);
+}
+
+/*
+ * input: non
+ * return: measured distance
+ * Description:
+ * it is responsible for firstly sending a trigger signal by calling "ULTRASONIC_trigger"
+ * then returning the measured distance
+ */
+uint16 ULTRASONIC_readDistance(void)
+{
+	uint8 distance = 0;/* is a variable that saves the distance value */
+	/* calling the "ULTRASONIC_trigger" function that is responsible for sending trigger signal */
+	ULTRASONIC_trigger();
+
+	if (counter == 2)
+	counter = 0;
+
+
+	distance = g_timerValue / 57.5;
+	return g_timerValue ;
+}
+
+void ULTRASONIC_edgeProcessing (void)
+{
+	counter++;
+	if (counter == 1)
+	{
+		ICU_clearTimerValue();
+		/* Detect falling edge */
+		ICU_setEdgeDetectionType(FALLING);
+	}
+	if (counter == 2)
+	{
+		g_timerValue = (ICU_getInputCaptureValue())  ;
+		/* Detect falling edge */
+		ICU_setEdgeDetectionType(RISING);
+		/* this for still awhile before sending another trigger */
+		_delay_ms(30);
+	}
+}
+
+
+
+
+

@@ -1,0 +1,17 @@
+/*-----------------------------------------------------------*
+ * [FILE NAME]: ultrasonic.h
+ *
+ * [AUTHOR]: YOUSEF KHALED
+ *
+ * [DATE CREATED]: 17/10/2021
+ *
+ * [DESCRIPTION]: header file for ULTRASONIC driver
+ *-----------------------------------------------------------*/
+
+
+#ifndef ULTRASONIC_H_
+#define ULTRASONIC_H_
+
+
+
+#endif /* ULTRASONIC_H_ */

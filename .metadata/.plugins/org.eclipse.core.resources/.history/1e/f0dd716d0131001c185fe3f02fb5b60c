@@ -1,0 +1,37 @@
+/*-------------------------------------------------------
+ * [FILE NAME]: project_4.c
+ *
+ * [AUTHOR]: YOUSEF KHALED
+ *
+ * [DATE CREATED]: 17/10/2021
+ *
+ * [DESCRIPTION]: Source file for project_4
+ -------------------------------------------------------*/
+
+#include "ultrasonic.h"
+#include "lcd.h"
+#include <util/delay.h>
+#include <avr/io.h>
+
+extern g_timerValue ;
+
+int main (void)
+{
+	uint8 distance ;
+	ULTRASONIC_init();
+	LCD_init();
+	SREG |= (1<<7);
+	LCD_displayString("distance=     cm");
+	while (1)
+	{
+		distance = ULTRASONIC_readDistance();
+		LCD_moveCursor(0, 10);
+		LCD_intgerToString(distance);
+
+		LCD_displayCharacter(' ');
+
+		LCD_moveCursor(1, 0);
+		LCD_intgerToString(g_timerValue);
+
+	}
+}

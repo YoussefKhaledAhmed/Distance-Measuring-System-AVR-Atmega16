@@ -1,0 +1,32 @@
+/*-------------------------------------------------------
+ * [FILE NAME]: project_4.c
+ *
+ * [AUTHOR]: YOUSEF KHALED
+ *
+ * [DATE CREATED]: 17/10/2021
+ *
+ * [DESCRIPTION]: Source file for project_4
+ -------------------------------------------------------*/
+
+#include "ultrasonic.h"
+#include "lcd.h"
+#include <util/delay.h>
+
+int main (void)
+{
+	uint8 read_distance = 0;
+
+	ULTRASONIC_init();
+	LCD_init();
+
+	LCD_displayString("distance =     ");
+	while (1)
+	{
+		read_distance = ULTRASONIC_readDistance();
+		LCD_moveCursor(0, 11);
+		LCD_intgerToString(read_distance);
+		LCD_displayCharacter(' ');
+		_delay_ms(1000);
+	}
+
+}

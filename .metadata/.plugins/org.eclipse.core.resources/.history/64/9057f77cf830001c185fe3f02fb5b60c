@@ -1,0 +1,67 @@
+/*-----------------------------------------------------------*
+ * [FILE NAME]: ultrasonic.c
+ *
+ * [AUTHOR]: YOUSEF KHALED
+ *
+ * [DATE CREATED]: 17/10/2021
+ *
+ * [DESCRIPTION]: Source file for ULTRASONIC driver
+ *-----------------------------------------------------------*/
+
+#include "ultrasonic.h"
+#include "common_macros.h"
+#include "icu.h"
+#include "gpio.h"
+#include <util/delay.h>
+#include <avr/io.h>
+
+float g_timerValue = 0;
+//uint8 g_timerValue2 = 0;
+uint8 counter = 0;
+
+
+void ULTRASONIC_init (void)
+{
+	ICU_init();
+	ICU_setCallBack(ULTRASONIC_edgeProcessing);
+	GPIO_setupPinDirection(PORTB_ID, PIN5_ID, PIN_OUTPUT);
+}
+
+void ULTRASONIC_trigger(void)
+{
+	GPIO_writePin(PORTB_ID, PIN5_ID, LOGIC_HIGH);
+	_delay_us(10);
+	GPIO_writePin(PORTB_ID, PIN5_ID, LOGIC_LOW);
+}
+
+uint16 ULTRASONIC_readDistance(void)
+{
+	ULTRASONIC_trigger();
+	while (counter < 2);
+	counter = 0;
+	return g_timerValue ;
+}
+
+void ULTRASONIC_edgeProcessing (void)
+{
+	counter++;
+	if (counter == 1)
+	{
+		ICU_clearTimerValue();
+		/* Detect falling edge */
+		ICU_setEdgeDetectionType(FALLING);
+	}
+	if (counter == 2)
+	{
+
+		g_timerValue = ((float)ICU_getInputCaptureValue()) *(0.017) ;
+		/* Detect falling edge */
+		ICU_setEdgeDetectionType(RISING);
+		_delay_ms(30);/* this for still awhile before sending another trigger */
+	}
+}
+
+
+
+
+

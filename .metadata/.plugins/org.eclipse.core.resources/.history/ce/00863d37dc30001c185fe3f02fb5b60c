@@ -1,0 +1,19 @@
+/*-------------------------------------------------------
+ * [FILE NAME]: project_4.c
+ *
+ * [AUTHOR]: YOUSEF KHALED
+ *
+ * [DATE CREATED]: 17/10/2021
+ *
+ * [DESCRIPTION]: Source file for project_4
+ -------------------------------------------------------*/
+
+#include "ultrasonic.h"
+#include "lcd.h"
+#include <util/delay.h>
+#include <avr/io.h>
+
+int main (void)
+{
+
+}
